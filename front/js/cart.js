@@ -1,4 +1,3 @@
-// faire en sorte de pouvoir changer la quantité ou supprimer un produit
 // Vérifier que les données du formulaires sont valables
 
 // 1 --- Depuis la page Panier, récupérer le panier et ses éléments via localStorage

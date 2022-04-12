@@ -79,5 +79,5 @@ add.addEventListener("click", function () {
     add.innerHTML = "Ajouter au panier";
   }
   add.innerHTML = "Article ajouté au panier ! ";
-  setTimeout(ajoutArticle, 2000);
+  setTimeout(ajoutArticle, 1500);
 });
