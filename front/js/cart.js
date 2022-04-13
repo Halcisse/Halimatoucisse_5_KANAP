@@ -57,6 +57,7 @@ if (produitDuPanier === null) {
         console.log(sousTotal);
 
         let total = [];
+
         total.push(sousTotal);
         console.log(total);
       });

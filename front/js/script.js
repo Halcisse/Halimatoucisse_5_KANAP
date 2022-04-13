@@ -29,5 +29,5 @@ fetch("http://localhost:3000/api/products")
       productDescriptionP.textContent = products[i].description;
       article.append(productDescriptionP);
     }
-    // console.table(products);
+    console.table(products);
   });
