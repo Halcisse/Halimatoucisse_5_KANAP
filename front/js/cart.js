@@ -16,27 +16,30 @@ if (produitDuPanier === null) {
   //SINON
   for (let i = 0; i < produitDuPanier.length; i++) {
     // console.log(produitDuPanier.length);
-    //On isole l'id du produit
+    //On isole l'id du produit + couleur et qty
     let productId = produitDuPanier[i].id;
-    // utiliser fetch pour récupérer les infos complètes de chaque article
+    let productColor = produitDuPanier[i].color;
+    let productQuantity = produitDuPanier[i].quantity;
+
+    // utiliser fetch pour récupérer et afficher les infos complètes de chaque article
     fetch(`http://localhost:3000/api/products/${productId}`)
       .then((response) => response.json())
       .then((product) => {
         console.log(product, produitDuPanier[i]);
-        cartItem.innerHTML += `               <article class="cart__item" data-id="${productId}" data-color="{product-color}">
+        cartItem.innerHTML += `               <article class="cart__item" data-id="${productId}" data-color="${productColor}">
         <div class="cart__item__img">
-          <img src="../images/product01.jpg" alt="Photographie d'un canapé">
+          <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
-            <h2>Nom du produit</h2>
-            <p>Vert</p>
+            <h2>${product.name}</h2>
+            <p>${productColor}</p>
             <p>${product.price}</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
               <p>Qté : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productQuantity}">
             </div>
             <div class="cart__item__content__settings__delete">
               <p class="deleteItem">Supprimer</p>
@@ -44,104 +47,51 @@ if (produitDuPanier === null) {
           </div>
         </div>
       </article>`;
+        // on calcule la quantité et le prix total
 
-        // //créer et insérer les éléments à afficher
-        // //article
-        // let article = document.createElement("article");
-        // console.log(produitDuPanier[i].color);
-        // article.className = "cart__item";
-        // article.setAttribute("data_id", `${productId}`);
-        // article.setAttribute("data_color", `${produitDuPanier[i].color}`);
-        // cartItem.append(article);
+        produitDuPanier[i].price = product.price;
+        let productPrice = produitDuPanier[i].price;
+        console.log(productPrice);
 
-        // //divImage + image
-        // let divImage = document.createElement("div");
-        // divImage.className = "cart__item__img";
-        // article.append(divImage);
-        // let image = document.createElement("img");
-        // image.src = product.imageUrl;
-        // image.alt = product.altTxt;
-        // divImage.append(image);
+        let sousTotal = productPrice * productQuantity;
+        console.log(sousTotal);
 
-        // //divItemContent + childs (description et quantité)
-        // let divItemContent = document.createElement("div");
-        // divItemContent.className = "cart__item__content";
-        // divItemContent.append(article);
-
-        // //divdescription (name, color, price)
-        // let divDescription = document.createElement("div");
-        // divDescription.className = "cart__item__content__description";
-        // divItemContent.append(divDescription);
-        // let productName = document.createElement("h2");
-        // productName.textContent = product.name;
-        // divDescription.append(productName);
-        // let productColor = document.createElement("p");
-        // productColor.textContent = produitDuPanier[i].color;
-        // divDescription.append(productColor);
-        // let productPrice = document.createElement("p");
-        // productPrice.textContent = product.price;
-        // divDescription.append(productPrice);
-
-        // //divsettings (divqté(qté + input))
-        // let divSettings = document.createElement("div");
-        // divSettings.className = "cart__item__content__settings";
-        // divItemContent.append(divSettings);
-        // let divQuantity = document.createElement("div");
-        // divQuantity.className = "cart__item__content__settings__quantity";
-        // divSettings.append(divQuantity);
-        // let productQuantity = document.createElement("p");
-        // productQuantity.innerText = "Qté : ";
-        // divQuantity.append(productQuantity);
-        // let quantityInput = document.createElement("input");
-        // quantityInput.className = "itemQuantity";
-        // quantityInput.setAttribute("type", "number");
-        // quantityInput.value = produitDuPanier[i].quantity;
-        // divQuantity.append(quantityInput);
-
-        // //divDelete + child
-        // let divSettingsDelete = document.createElement("div");
-        // divSettingsDelete.className = "cart__item__content__settings__delete";
-        // divSettingsDelete.appendChild(article);
-        // let deleteItem = document.createElement("p");
-        // deleteItem.className = "deleteItem";
-        // deleteItem.innerText = "Supprimer";
-
-        // on calcule le total
-        // for (t = 0; t < product.length; t++) {
-        //   let calculTotal = [];
-        //   console.log(product.price);
-        //   calculTotal.push(product.price);
-        //   console.log(total);
-        //   let reducer = (accumulator, currentValue) =>
-        //     accumulator + currentValue;
-        //   let prixTotal = calculTotal.reduce(reducer, 0);
-        //   console.log(prixTotal);
-        // }
+        let total = [];
+        total.push(sousTotal);
+        console.log(total);
       });
   }
+
+  //           // let quantity = document.getElementById("totalQuantity");
+  //           // quantity.textContent = ` ${totalQuantity}`;
+  //           // let total = document.getElementById("totalPrice");
+  //           // total.textContent = `${prixTotal}`;
+  // }
 }
+
 // 3 --- Modifictaion du panier
 
 //fonction qui permet de supprimer un produit du panier
 // a mettre dans evenlistener sur btn supprimer
-function removeProduct(product, produitDuPanier) {
-  produitDuPanier = produitDuPanier.filter((p) => p.id != product.id); // on supprime l'élément qui a le meme id que product
-  localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-}
+// function removeProduct(product, produitDuPanier) {
+//   produitDuPanier = produitDuPanier.filter((p) => p.id != product.id); // on supprime l'élément qui a le meme id que product
+//   localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+// }
+// removeProduct();
+// //fonction qui permet de modifier la quantité d'un produit ( A REVOIR)
+// // a mettre dans evenlistener sur btn qté input
+// //Aussi, la méthode Element.closest() devrait permettre de cibler le produit que vous souhaitez supprimer (où dont vous souhaitez
+// //modifier la quantité) grâce à son identifiant et sa couleur.
 
-//fonction qui permet de modifier la quantité d'un produit ( A REVOIR)
-// a mettre dans evenlistener sur btn qté input
-//Aussi, la méthode Element.closest() devrait permettre de cibler le produit que vous souhaitez supprimer (où dont vous souhaitez
-//modifier la quantité) grâce à son identifiant et sa couleur.
-
-function changeQuantity(product, quantity, produitDuPanier) {
-  let foundProduct = produitDuPanier.find((p) => p.id == product.id); // on modifie la quantité du produit qui a le meme id que product
-  if (foundProduct != undefined) {
-    foundProduct.quantity = quantity; //(AJOUT OK MAIS COMMENT ENLEVER UN PRODUIT)
-    if (foundProduct <= 0) {
-      removeProduct(product);
-    } else {
-      localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-    }
-  }
-}
+// function changeQuantity(product, quantity, produitDuPanier) {
+//   let foundProduct = produitDuPanier.find((p) => p.id == product.id); // on modifie la quantité du produit qui a le meme id que product
+//   if (foundProduct != undefined) {
+//     foundProduct.quantity = quantity;
+//     if (foundProduct <= 0) {
+//       removeProduct(product);
+//     } else {
+//       localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+//     }
+//   }
+//   changeQuantity();
+// }
