@@ -58,6 +58,7 @@ if (produitDuPanier === null) {
 
           // prix total
           let productPrice = product.price;
+
           let sousTotal = productPrice * productQuantity;
           totalPrice.push(sousTotal);
 
@@ -79,12 +80,14 @@ if (produitDuPanier === null) {
         // Modification qté et mise à jour du total panier
         let productCard = document.querySelectorAll(".cart__item");
         let itemQuantity = document.querySelectorAll(".itemQuantity");
-        let productPrice = product.price;
+
         for (let i = 0; i < productCard.length; i++) {
           let itemQty = itemQuantity[i];
           let article = produitDuPanier[i];
           let newQuantity = article.quantity;
           let productPrice = product.price;
+
+          console.log(productPrice);
 
           itemQty.addEventListener("change", (e) => {
             //mettre à jour la quantité total...
@@ -93,10 +96,9 @@ if (produitDuPanier === null) {
             totalQuantity.splice(i, 1, newQuantity);
 
             // && le prix total
-
             let newSousTotal = productPrice * newQuantity;
-            console.log(newSousTotal);
             totalPrice.splice(i, 1, newSousTotal);
+            console.log(newSousTotal);
             console.log(totalPrice);
 
             // on fait le calul grace a la fonction reducer
@@ -109,6 +111,7 @@ if (produitDuPanier === null) {
             let quantity = document.getElementById("totalQuantity");
             quantity.textContent = ` ${TotalQuantityPanier}`;
             let total = document.getElementById("totalPrice");
+
             total.textContent = `${TotalPricePanier}`;
           });
         }
