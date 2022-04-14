@@ -50,8 +50,8 @@ if (produitDuPanier === null) {
           </div>
         </div>
       </article>`;
-        // Calcul de la quantité et du prix total
 
+        // Calcul de la quantité et du prix total
         function calculTotal() {
           // quantity total
           totalQuantity.push(productQuantity);
@@ -74,21 +74,42 @@ if (produitDuPanier === null) {
           total.textContent = `${TotalPricePanier}`;
         }
         calculTotal();
+
         // Gestion de la suppression de produit et changement de quantité
-        // Modification qté
+        // Modification qté et mise à jour du total panier
         let productCard = document.querySelectorAll(".cart__item");
         let itemQuantity = document.querySelectorAll(".itemQuantity");
-        console.log(productCard);
-
+        let productPrice = product.price;
         for (let i = 0; i < productCard.length; i++) {
-          let quantity = itemQuantity[i];
+          let itemQty = itemQuantity[i];
           let article = produitDuPanier[i];
-          quantity.addEventListener("change", (e) => {
-            console.log(e.target.value);
-            article.quantity = parseInt(e.target.value); // la quantité
+          let newQuantity = article.quantity;
+          let productPrice = product.price;
+
+          itemQty.addEventListener("change", (e) => {
+            //mettre à jour la quantité total...
+            newQuantity = parseInt(e.target.value);
             localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-            console.log(article.quantity);
-            //mettre à jour le prix total
+            totalQuantity.splice(i, 1, newQuantity);
+
+            // && le prix total
+
+            let newSousTotal = productPrice * newQuantity;
+            console.log(newSousTotal);
+            totalPrice.splice(i, 1, newSousTotal);
+            console.log(totalPrice);
+
+            // on fait le calul grace a la fonction reducer
+            let reducer = (accumulator, currentValue) =>
+              accumulator + currentValue;
+            let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
+            let TotalPricePanier = totalPrice.reduce(reducer, 0);
+
+            // on affiche le total et le nombre d'article
+            let quantity = document.getElementById("totalQuantity");
+            quantity.textContent = ` ${TotalQuantityPanier}`;
+            let total = document.getElementById("totalPrice");
+            total.textContent = `${TotalPricePanier}`;
           });
         }
 
