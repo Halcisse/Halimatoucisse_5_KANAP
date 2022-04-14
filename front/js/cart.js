@@ -4,7 +4,7 @@
 let produitDuPanier = JSON.parse(localStorage.getItem("panier"));
 console.log(produitDuPanier);
 
-// 2 --- On vérifie s'il y a des articles dans le panier, si oui, on les affiche (A REVOIR)
+// 2 --- On vérifie s'il y a des articles dans le panier, si oui, on les affiche
 
 // on cible l'emplacement
 const cartItem = document.getElementById("cart__items");
@@ -14,8 +14,11 @@ if (produitDuPanier === null) {
   alert("Votre panier est vide, veuillez séléctionner au moins un article");
 } else {
   //SINON
+  //on définis les variables nécessaire au calcul du total en dehors de la boucle
+  let totalPrice = [];
+  let totalQuantity = [];
+  //on crée la boucle permettant d'afficher les produits du panier
   for (let i = 0; i < produitDuPanier.length; i++) {
-    // console.log(produitDuPanier.length);
     //On isole l'id du produit + couleur et qty
     let productId = produitDuPanier[i].id;
     let productColor = produitDuPanier[i].color;
@@ -25,7 +28,7 @@ if (produitDuPanier === null) {
     fetch(`http://localhost:3000/api/products/${productId}`)
       .then((response) => response.json())
       .then((product) => {
-        console.log(product, produitDuPanier[i]);
+        // console.log(product, produitDuPanier[i]);
         cartItem.innerHTML += `               <article class="cart__item" data-id="${productId}" data-color="${productColor}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -47,38 +50,65 @@ if (produitDuPanier === null) {
           </div>
         </div>
       </article>`;
-        // on calcule la quantité et le prix total
+        // Calcul de la quantité et du prix total
 
-        produitDuPanier[i].price = product.price;
-        let productPrice = produitDuPanier[i].price;
-        console.log(productPrice);
+        function calculTotal() {
+          // quantity total
+          totalQuantity.push(productQuantity);
 
-        let sousTotal = productPrice * productQuantity;
-        console.log(sousTotal);
+          // prix total
+          let productPrice = product.price;
+          let sousTotal = productPrice * productQuantity;
+          totalPrice.push(sousTotal);
 
-        let total = [];
+          // on fait le calul grace a la fonction reducer
+          let reducer = (accumulator, currentValue) =>
+            accumulator + currentValue;
+          let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
+          let TotalPricePanier = totalPrice.reduce(reducer, 0);
 
-        total.push(sousTotal);
-        console.log(total);
+          // on affiche le total et le nombre d'article
+          let quantity = document.getElementById("totalQuantity");
+          quantity.textContent = ` ${TotalQuantityPanier}`;
+          let total = document.getElementById("totalPrice");
+          total.textContent = `${TotalPricePanier}`;
+        }
+        calculTotal();
+        // Gestion de la suppression de produit et changement de quantité
+        // Modification qté
+        let productCard = document.querySelectorAll(".cart__item");
+        let itemQuantity = document.querySelectorAll(".itemQuantity");
+        console.log(productCard);
+
+        for (let i = 0; i < productCard.length; i++) {
+          let quantity = itemQuantity[i];
+          let article = produitDuPanier[i];
+          quantity.addEventListener("change", (e) => {
+            console.log(e.target.value);
+            article.quantity = parseInt(e.target.value); // la quantité
+            localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+            console.log(article.quantity);
+            //mettre à jour le prix total
+          });
+        }
+
+        //           fonction qui permet de supprimer un produit du panier
+        // a mettre dans evenlistener sur btn supprimer
+        // function removeProduct(product, produitDuPanier) {
+        //   produitDuPanier = produitDuPanier.filter((p) => p.id != product.id); // on supprime l'élément qui a le meme id que product
+        //   localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+        // }
+        // removeProduct();
       });
   }
-
-  //           // let quantity = document.getElementById("totalQuantity");
-  //           // quantity.textContent = ` ${totalQuantity}`;
-  //           // let total = document.getElementById("totalPrice");
-  //           // total.textContent = `${prixTotal}`;
-  // }
 }
 
 // 3 --- Modifictaion du panier
 
-//fonction qui permet de supprimer un produit du panier
-// a mettre dans evenlistener sur btn supprimer
-// function removeProduct(product, produitDuPanier) {
-//   produitDuPanier = produitDuPanier.filter((p) => p.id != product.id); // on supprime l'élément qui a le meme id que product
-//   localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-// }
-// removeProduct();
+// productQuantity = e.target.value;
+// localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+// calculTotal();
+
 // //fonction qui permet de modifier la quantité d'un produit ( A REVOIR)
 // // a mettre dans evenlistener sur btn qté input
 // //Aussi, la méthode Element.closest() devrait permettre de cibler le produit que vous souhaitez supprimer (où dont vous souhaitez
