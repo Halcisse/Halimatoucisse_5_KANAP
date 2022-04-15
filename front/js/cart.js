@@ -52,67 +52,53 @@ if (produitDuPanier === null) {
       </article>`;
 
         // Calcul de la quantité et du prix total
-        function calculTotal() {
-          // quantity total
-          totalQuantity.push(productQuantity);
+        // quantity total
+        totalQuantity.push(parseInt(productQuantity));
 
-          // prix total
-          let productPrice = product.price;
+        // prix total
+        let productPrice = product.price;
+        let sousTotal = productPrice * productQuantity;
+        totalPrice.push(sousTotal);
+        console.log(typeof sousTotal);
 
-          let sousTotal = productPrice * productQuantity;
-          totalPrice.push(sousTotal);
+        // on fait le calul grace a la fonction reducer
+        let reducer = (accumulator, currentValue) => accumulator + currentValue;
+        let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
+        let TotalPricePanier = totalPrice.reduce(reducer, 0);
+        console.log(TotalQuantityPanier);
+        console.log(TotalPricePanier);
 
-          // on fait le calul grace a la fonction reducer
-          let reducer = (accumulator, currentValue) =>
-            accumulator + currentValue;
-          let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
-          let TotalPricePanier = totalPrice.reduce(reducer, 0);
+        //FAIRE EN SORTE QUON EST PAS BESOIN DE RAFRAICHIR LA PAGE
 
-          // on affiche le total et le nombre d'article
-          let quantity = document.getElementById("totalQuantity");
-          quantity.textContent = ` ${TotalQuantityPanier}`;
-          let total = document.getElementById("totalPrice");
-          total.textContent = `${TotalPricePanier}`;
-        }
-        calculTotal();
+        // on affiche le total et le nombre d'article
+        let quantity = document.getElementById("totalQuantity");
+        quantity.textContent = ` ${TotalQuantityPanier}`;
+        let total = document.getElementById("totalPrice");
+        total.textContent = `${TotalPricePanier}`;
 
         // Gestion de la suppression de produit et changement de quantité
         // Modification qté et mise à jour du total panier
-        let productCard = document.querySelectorAll(".cart__item");
         let itemQuantity = document.querySelectorAll(".itemQuantity");
+        for (let i = 0; i < itemQuantity.length; i++) {
+          itemQuantity[i].addEventListener("change", (e) => {
+            let newQuantity = e.target.value;
+            let articleToChangeId = e.target.closest("article").dataset.id;
+            let articleToChangeColor =
+              e.target.closest("article").dataset.color;
 
-        for (let i = 0; i < productCard.length; i++) {
-          let itemQty = itemQuantity[i];
-          let article = produitDuPanier[i];
-          let newQuantity = article.quantity;
-
-          itemQty.addEventListener("change", (e) => {
-            //mettre à jour la quantité total...
-            newQuantity = parseInt(e.target.value);
-            localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-            totalQuantity.splice(i, 1, newQuantity);
-
-            // on fait le calul grace a la fonction reducer
-            let reducer = (accumulator, currentValue) =>
-              accumulator + currentValue;
-            let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
-            let TotalPricePanier = totalPrice.reduce(reducer, 0);
-
-            // on affiche le total et le nombre d'article
-            let quantity = document.getElementById("totalQuantity");
-            quantity.textContent = ` ${TotalQuantityPanier}`;
-            let total = document.getElementById("totalPrice");
-            total.textContent = `${TotalPricePanier}`;
+            let foundProduct = produitDuPanier.find(
+              (p) =>
+                p.id === articleToChangeId && p.color === articleToChangeColor
+            );
+            if (foundProduct != undefined) {
+              foundProduct.quantity = newQuantity;
+              localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+            }
+            //ELSE IF FOUNDPRODUCT <= 0, supprimer le produit du panier
           });
-        }
 
-        //           fonction qui permet de supprimer un produit du panier
-        // a mettre dans evenlistener sur btn supprimer
-        // function removeProduct(product, produitDuPanier) {
-        //   produitDuPanier = produitDuPanier.filter((p) => p.id != product.id); // on supprime l'élément qui a le meme id que product
-        //   localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-        // }
-        // removeProduct();
+          //ADDLISTENER SUR LE BOUTON SUPPRIMER, pour effacer un produit du panier
+        }
       });
   }
 }
@@ -142,7 +128,7 @@ function validatePrenom(e) {
   } else {
   }
 }
-console.log(prenom.validity.valueMissing);
+// console.log(prenom.validity.valueMissing);
 // pour valider le champ nom
 let nom = document.getElementById("lastName");
 let nomErreur = document.getElementById("lastNameErrorMsg");
