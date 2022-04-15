@@ -85,21 +85,12 @@ if (produitDuPanier === null) {
           let itemQty = itemQuantity[i];
           let article = produitDuPanier[i];
           let newQuantity = article.quantity;
-          let productPrice = product.price;
-
-          console.log(productPrice);
 
           itemQty.addEventListener("change", (e) => {
             //mettre à jour la quantité total...
             newQuantity = parseInt(e.target.value);
             localStorage.setItem("panier", JSON.stringify(produitDuPanier));
             totalQuantity.splice(i, 1, newQuantity);
-
-            // && le prix total
-            let newSousTotal = productPrice * newQuantity;
-            totalPrice.splice(i, 1, newSousTotal);
-            console.log(newSousTotal);
-            console.log(totalPrice);
 
             // on fait le calul grace a la fonction reducer
             let reducer = (accumulator, currentValue) =>
@@ -111,7 +102,6 @@ if (produitDuPanier === null) {
             let quantity = document.getElementById("totalQuantity");
             quantity.textContent = ` ${TotalQuantityPanier}`;
             let total = document.getElementById("totalPrice");
-
             total.textContent = `${TotalPricePanier}`;
           });
         }
@@ -127,26 +117,104 @@ if (produitDuPanier === null) {
   }
 }
 
-// 3 --- Modifictaion du panier
+// 3 --- Validation FORMULAIRE
 
-// productQuantity = e.target.value;
-// localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-// calculTotal();
+let validation = document.getElementById("order"); // on cible le btn de validation
 
-// //fonction qui permet de modifier la quantité d'un produit ( A REVOIR)
-// // a mettre dans evenlistener sur btn qté input
-// //Aussi, la méthode Element.closest() devrait permettre de cibler le produit que vous souhaitez supprimer (où dont vous souhaitez
-// //modifier la quantité) grâce à son identifiant et sa couleur.
+//pour valider le champ prénom
+let prenom = document.getElementById("firstName");
+let prenomErreur = document.getElementById("firstNameErrorMsg");
+let prenomRegexp =
+  /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+validation.addEventListener("click", validatePrenom);
 
-// function changeQuantity(product, quantity, produitDuPanier) {
-//   let foundProduct = produitDuPanier.find((p) => p.id == product.id); // on modifie la quantité du produit qui a le meme id que product
-//   if (foundProduct != undefined) {
-//     foundProduct.quantity = quantity;
-//     if (foundProduct <= 0) {
-//       removeProduct(product);
-//     } else {
-//       localStorage.setItem("panier", JSON.stringify(produitDuPanier));
-//     }
-//   }
-//   changeQuantity();
-// }
+function validatePrenom(e) {
+  if (prenom.validity.valueMissing) {
+    //si le champ de donnée n'est pas renseigné
+    e.preventDefault();
+    prenomErreur.textContent = "Veuillez indiquer votre prénom";
+    prenomErreur.style.color = "red";
+  } else if (prenomRegexp.test(prenom.value == false)) {
+    // si le champs de donnée est incorrect
+    e.preventDefault();
+    prenomErreur.textContent = "Le format est incorrect";
+    prenomErreur.style.color = "orange";
+  } else {
+  }
+}
+console.log(prenom.validity.valueMissing);
+// pour valider le champ nom
+let nom = document.getElementById("lastName");
+let nomErreur = document.getElementById("lastNameErrorMsg");
+let nomRegexp =
+  /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+validation.addEventListener("click", validateNom);
+
+function validateNom(e) {
+  if (nom.validity.valueMissing) {
+    e.preventDefault();
+    nomErreur.textContent = "Veuillez indiquer votre nom";
+    nomErreur.style.color = "red";
+  } else if (nomRegexp.test(nom.value == false)) {
+    e.preventDefault();
+    nomErreur.textContent = "Le format est incorrect";
+    nomErreur.style.color = "orange";
+  } else {
+  }
+}
+// pour valider le champ adresse
+let adresse = document.getElementById("address");
+let adresseErreur = document.getElementById("addressErrorMsg");
+let adresseRegexp =
+  /^[0-9A-Z]+[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+validation.addEventListener("click", validateAdresse);
+
+function validateAdresse(e) {
+  if (adresse.validity.valueMissing) {
+    e.preventDefault();
+    adresseErreur.textContent = "Veuillez indiquer votre adresse";
+    adresseErreur.style.color = "red";
+  } else if (adresseRegexp.test(adresse.value == false)) {
+    e.preventDefault();
+    adresseErreur.textContent = "Le format d'adresse n'est pas valide";
+    adresseErreur.style.color = "orange";
+  } else {
+  }
+}
+// pour valider le champ ville
+let ville = document.getElementById("city");
+let villeErreur = document.getElementById("cityErrorMsg");
+let villeRegexp = /^[A-Z][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+validation.addEventListener("click", validateVille);
+
+function validateVille(e) {
+  if (ville.validity.valueMissing) {
+    e.preventDefault();
+    villeErreur.textContent = "Veuillez indiquer votre ville";
+    villeErreur.style.color = "red";
+  } else if (villeRegexp.test(ville.value == false)) {
+    e.preventDefault();
+    villeErreur.textContent = "Le format de la ville est incorrect";
+    villeErreur.style.color = "orange";
+  } else {
+  }
+}
+// pour valider le champ email
+let email = document.getElementById("email");
+let emailErreur = document.getElementById("emailErrorMsg");
+let emailRegexp = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2-10}$/;
+validation.addEventListener("click", validateEmail);
+
+function validateEmail(e) {
+  console.log(email.value);
+  if ((email.value = "")) {
+    e.preventDefault();
+    emailErreur.textContent = "Veuillez indiquer votre adresse email";
+    emailErreur.style.color = "red";
+  } else if (emailRegexp.test(email.value == false)) {
+    e.preventDefault();
+    emailErreur.textContent = "Le format de l'email' est incorrect";
+    emailErreur.style.color = "orange";
+  } else {
+  }
+}
