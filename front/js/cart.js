@@ -111,8 +111,11 @@ if (produitDuPanier === null) {
               produitDuPanier.splice(i, 1);
               localStorage.setItem("panier", JSON.stringify(produitDuPanier));
               window.location.reload();
-            } else if (foundProduct != undefined && produitDuPanier == [0]) {
-              localStorage.clear();
+            } else if (produitDuPanier === []) {
+              console.log(produitDuPanier);
+              alert(
+                "Votre panier est vide, veuillez séléctionner au moins un article"
+              );
             }
           });
         }
