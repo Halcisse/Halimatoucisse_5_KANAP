@@ -59,14 +59,11 @@ if (produitDuPanier === null) {
         let productPrice = product.price;
         let sousTotal = productPrice * productQuantity;
         totalPrice.push(sousTotal);
-        console.log(typeof sousTotal);
 
         // on fait le calul grace a la fonction reducer
         let reducer = (accumulator, currentValue) => accumulator + currentValue;
         let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
         let TotalPricePanier = totalPrice.reduce(reducer, 0);
-        console.log(TotalQuantityPanier);
-        console.log(TotalPricePanier);
 
         //FAIRE EN SORTE QUON EST PAS BESOIN DE RAFRAICHIR LA PAGE
 
@@ -79,8 +76,10 @@ if (produitDuPanier === null) {
         // Gestion de la suppression de produit et changement de quantité
         // Modification qté et mise à jour du total panier
         let itemQuantity = document.querySelectorAll(".itemQuantity");
+
         for (let i = 0; i < itemQuantity.length; i++) {
           itemQuantity[i].addEventListener("change", (e) => {
+            console.log(e.target);
             let newQuantity = e.target.value;
             let articleToChangeId = e.target.closest("article").dataset.id;
             let articleToChangeColor =
@@ -93,11 +92,29 @@ if (produitDuPanier === null) {
             if (foundProduct != undefined) {
               foundProduct.quantity = newQuantity;
               localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+              window.location.reload();
             }
-            //ELSE IF FOUNDPRODUCT <= 0, supprimer le produit du panier
           });
-
-          //ADDLISTENER SUR LE BOUTON SUPPRIMER, pour effacer un produit du panier
+        }
+        //Suppresion d'un article
+        let btnSupprimer = document.querySelectorAll(".deleteItem");
+        for (let i = 0; i < btnSupprimer.length; i++) {
+          btnSupprimer[i].addEventListener("click", (e) => {
+            let articleToDeleteId = e.target.closest("article").dataset.id;
+            let articleToDeleteColor =
+              e.target.closest("article").dataset.color;
+            let foundProduct = produitDuPanier.find(
+              (p) =>
+                p.id === articleToDeleteId && p.color === articleToDeleteColor
+            );
+            if (foundProduct != undefined) {
+              produitDuPanier.splice(i, 1);
+              localStorage.setItem("panier", JSON.stringify(produitDuPanier));
+              window.location.reload();
+            } else if (foundProduct != undefined && produitDuPanier == [0]) {
+              localStorage.clear();
+            }
+          });
         }
       });
   }
@@ -192,7 +209,7 @@ let emailRegexp = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2-10}$/;
 validation.addEventListener("click", validateEmail);
 
 function validateEmail(e) {
-  console.log(email.value);
+  // console.log(email.value);
   if ((email.value = "")) {
     e.preventDefault();
     emailErreur.textContent = "Veuillez indiquer votre adresse email";
