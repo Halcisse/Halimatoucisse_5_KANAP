@@ -111,27 +111,30 @@ if (produitDuPanier === null) {
               produitDuPanier.splice(i, 1);
               localStorage.setItem("panier", JSON.stringify(produitDuPanier));
               window.location.reload();
-            } else if (produitDuPanier === []) {
-              console.log(produitDuPanier);
-              alert(
-                "Votre panier est vide, veuillez séléctionner au moins un article"
-              );
             }
           });
         }
       });
+  }
+
+  if (produitDuPanier.length === 0) {
+    totalQuantity = document.getElementById("totalQuantity");
+    totalQuantity.textContent = 0;
+    totalPrice = document.getElementById("totalPrice");
+    totalPrice.textContent = 0;
+    alert("Le panier a été vidé, veuillez sélectionner au moins un article");
   }
 }
 
 // 3 --- Validation FORMULAIRE
 
 let validation = document.getElementById("order"); // on cible le btn de validation
+// console.log(validation);
 
 //pour valider le champ prénom
 let prenom = document.getElementById("firstName");
 let prenomErreur = document.getElementById("firstNameErrorMsg");
-let prenomRegexp =
-  /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+let prenomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validatePrenom);
 
 function validatePrenom(e) {
@@ -140,20 +143,18 @@ function validatePrenom(e) {
     e.preventDefault();
     prenomErreur.textContent = "Veuillez indiquer votre prénom";
     prenomErreur.style.color = "red";
-  } else if (prenomRegexp.test(prenom.value == false)) {
+  } else if (prenomRegexp.test(prenom.value) == false) {
     // si le champs de donnée est incorrect
     e.preventDefault();
     prenomErreur.textContent = "Le format est incorrect";
     prenomErreur.style.color = "orange";
-  } else {
   }
 }
 // console.log(prenom.validity.valueMissing);
 // pour valider le champ nom
 let nom = document.getElementById("lastName");
 let nomErreur = document.getElementById("lastNameErrorMsg");
-let nomRegexp =
-  /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+let nomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateNom);
 
 function validateNom(e) {
@@ -161,18 +162,17 @@ function validateNom(e) {
     e.preventDefault();
     nomErreur.textContent = "Veuillez indiquer votre nom";
     nomErreur.style.color = "red";
-  } else if (nomRegexp.test(nom.value == false)) {
+  } else if (nomRegexp.test(nom.value) == false) {
     e.preventDefault();
     nomErreur.textContent = "Le format est incorrect";
     nomErreur.style.color = "orange";
-  } else {
   }
 }
 // pour valider le champ adresse
 let adresse = document.getElementById("address");
 let adresseErreur = document.getElementById("addressErrorMsg");
 let adresseRegexp =
-  /^[0-9A-Z]+[a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+  /^[0-9A-Z]+(([A-Za-zÉÈÎÏéèêîïàç]+[,.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateAdresse);
 
 function validateAdresse(e) {
@@ -180,17 +180,17 @@ function validateAdresse(e) {
     e.preventDefault();
     adresseErreur.textContent = "Veuillez indiquer votre adresse";
     adresseErreur.style.color = "red";
-  } else if (adresseRegexp.test(adresse.value == false)) {
+  } else if (adresseRegexp.test(adresse.value) == false) {
     e.preventDefault();
     adresseErreur.textContent = "Le format d'adresse n'est pas valide";
     adresseErreur.style.color = "orange";
-  } else {
   }
 }
 // pour valider le champ ville
 let ville = document.getElementById("city");
 let villeErreur = document.getElementById("cityErrorMsg");
-let villeRegexp = /^[A-Z][a-zéèêîïàç]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêîïàç]+)?/;
+let villeRegexp =
+  /^(([0-9]{5}?[A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateVille);
 
 function validateVille(e) {
@@ -202,25 +202,29 @@ function validateVille(e) {
     e.preventDefault();
     villeErreur.textContent = "Le format de la ville est incorrect";
     villeErreur.style.color = "orange";
-  } else {
   }
 }
 // pour valider le champ email
 let email = document.getElementById("email");
 let emailErreur = document.getElementById("emailErrorMsg");
-let emailRegexp = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2-10}$/;
+let emailRegexp = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
 validation.addEventListener("click", validateEmail);
 
 function validateEmail(e) {
-  // console.log(email.value);
-  if ((email.value = "")) {
+  if (email.validity.valueMissing) {
     e.preventDefault();
     emailErreur.textContent = "Veuillez indiquer votre adresse email";
     emailErreur.style.color = "red";
-  } else if (emailRegexp.test(email.value == false)) {
-    e.preventDefault();
-    emailErreur.textContent = "Le format de l'email' est incorrect";
-    emailErreur.style.color = "orange";
-  } else {
   }
 }
+email.onkeydown = function () {
+  if (emailRegexp.test(email.value) == true) {
+    console.log(emailRegexp.test(email.value));
+    emailErreur.textContent = "L'adresse email est valide";
+    emailErreur.style.color = "lime";
+  } else {
+    console.log(emailRegexp.test(email.value));
+    emailErreur.textContent = "L'adresse email n'est pas valide";
+    emailErreur.style.color = "orange";
+  }
+};
