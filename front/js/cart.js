@@ -171,8 +171,6 @@ function validateNom(e) {
 // pour valider le champ adresse
 let adresse = document.getElementById("address");
 let adresseErreur = document.getElementById("addressErrorMsg");
-let adresseRegexp =
-  /^[0-9A-Z]+(([A-Za-zÉÈÎÏéèêîïàç]+[,.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateAdresse);
 
 function validateAdresse(e) {
@@ -180,17 +178,11 @@ function validateAdresse(e) {
     e.preventDefault();
     adresseErreur.textContent = "Veuillez indiquer votre adresse";
     adresseErreur.style.color = "red";
-  } else if (adresseRegexp.test(adresse.value) == false) {
-    e.preventDefault();
-    adresseErreur.textContent = "Le format d'adresse n'est pas valide";
-    adresseErreur.style.color = "orange";
   }
 }
 // pour valider le champ ville
 let ville = document.getElementById("city");
 let villeErreur = document.getElementById("cityErrorMsg");
-let villeRegexp =
-  /^(([0-9]{5}?[A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateVille);
 
 function validateVille(e) {
@@ -198,10 +190,6 @@ function validateVille(e) {
     e.preventDefault();
     villeErreur.textContent = "Veuillez indiquer votre ville";
     villeErreur.style.color = "red";
-  } else if (villeRegexp.test(ville.value == false)) {
-    e.preventDefault();
-    villeErreur.textContent = "Le format de la ville est incorrect";
-    villeErreur.style.color = "orange";
   }
 }
 // pour valider le champ email
