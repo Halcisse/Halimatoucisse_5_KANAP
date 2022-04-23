@@ -129,7 +129,7 @@ if (produitDuPanier === null) {
 // 3 --- Validation FORMULAIRE
 
 let validation = document.getElementById("order"); // on cible le btn de validation
-// console.log(validation);
+let champValid = false; // le champ est manquant oumauvais format
 
 //pour valider le champ prénom
 let prenom = document.getElementById("firstName");
@@ -140,17 +140,21 @@ validation.addEventListener("click", validatePrenom);
 function validatePrenom(e) {
   if (prenom.validity.valueMissing) {
     //si le champ de donnée n'est pas renseigné
-    e.preventDefault();
+
     prenomErreur.textContent = "Veuillez indiquer votre prénom";
     prenomErreur.style.color = "red";
+    champValid = false;
   } else if (prenomRegexp.test(prenom.value) == false) {
     // si le champs de donnée est incorrect
-    e.preventDefault();
+
     prenomErreur.textContent = "Le format est incorrect";
     prenomErreur.style.color = "orange";
+    champValid = false;
+  } else {
+    champValid = true;
   }
 }
-// console.log(prenom.validity.valueMissing);
+
 // pour valider le champ nom
 let nom = document.getElementById("lastName");
 let nomErreur = document.getElementById("lastNameErrorMsg");
@@ -159,13 +163,15 @@ validation.addEventListener("click", validateNom);
 
 function validateNom(e) {
   if (nom.validity.valueMissing) {
-    e.preventDefault();
     nomErreur.textContent = "Veuillez indiquer votre nom";
     nomErreur.style.color = "red";
+    champValid = false;
   } else if (nomRegexp.test(nom.value) == false) {
-    e.preventDefault();
     nomErreur.textContent = "Le format est incorrect";
     nomErreur.style.color = "orange";
+    champValid = false;
+  } else {
+    champValid = true;
   }
 }
 // pour valider le champ adresse
@@ -175,9 +181,11 @@ validation.addEventListener("click", validateAdresse);
 
 function validateAdresse(e) {
   if (adresse.validity.valueMissing) {
-    e.preventDefault();
     adresseErreur.textContent = "Veuillez indiquer votre adresse";
     adresseErreur.style.color = "red";
+    champValid = false;
+  } else {
+    champValid = true;
   }
 }
 // pour valider le champ ville
@@ -187,9 +195,11 @@ validation.addEventListener("click", validateVille);
 
 function validateVille(e) {
   if (ville.validity.valueMissing) {
-    e.preventDefault();
     villeErreur.textContent = "Veuillez indiquer votre ville";
     villeErreur.style.color = "red";
+    champValid = false;
+  } else {
+    champValid = true;
   }
 }
 // pour valider le champ email
@@ -200,19 +210,53 @@ validation.addEventListener("click", validateEmail);
 
 function validateEmail(e) {
   if (email.validity.valueMissing) {
-    e.preventDefault();
     emailErreur.textContent = "Veuillez indiquer votre adresse email";
     emailErreur.style.color = "red";
+    champValid = false;
   }
 }
 email.onkeydown = function () {
   if (emailRegexp.test(email.value) == true) {
-    console.log(emailRegexp.test(email.value));
     emailErreur.textContent = "L'adresse email est valide";
     emailErreur.style.color = "lime";
+    champValid = true;
   } else {
-    console.log(emailRegexp.test(email.value));
     emailErreur.textContent = "L'adresse email n'est pas valide";
     emailErreur.style.color = "orange";
+    champValid = false;
   }
 };
+
+// création de l'objet contact et du tableau de produit
+
+// let formId = document.querySelector(".cart__order__form");
+// console.log(formId);
+validation.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // récupération des valeurs du formulaire dans l'objet contact
+  let contact = {
+    prenom: prenom.value,
+    nom: nom.value,
+    adresse: adresse.value,
+    ville: ville.value,
+    email: email.value,
+  };
+
+  //envoi des données dans le LS
+  if (champValid == true) {
+    console.log(champValid); //ERNVOI TRUE QD EMAIL EST INCORRECT A REVOIR
+    localStorage.setItem("contact", JSON.stringify(contact));
+  } else {
+    alert("Merci de vérifier l'exactitude des renseignements du formulaire");
+  }
+
+  //objet contenant objet contact et panier à envoyer dans l'api
+  let aEnvoyer = {
+    // UTILISER FETCH POUR ENVOYER PRODUCT + FORMULAIRE A L API
+    produitDuPanier,
+    contact,
+  };
+
+  console.log("a envoyer", aEnvoyer);
+});
