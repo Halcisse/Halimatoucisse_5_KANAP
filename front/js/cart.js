@@ -1,5 +1,3 @@
-// Vérifier que les données du formulaires sont valables
-
 // 1 --- Depuis la page Panier, récupérer le panier et ses éléments via localStorage
 let produitDuPanier = JSON.parse(localStorage.getItem("panier"));
 console.log(produitDuPanier);
@@ -65,8 +63,6 @@ if (produitDuPanier === null) {
         let TotalQuantityPanier = totalQuantity.reduce(reducer, 0);
         let TotalPricePanier = totalPrice.reduce(reducer, 0);
 
-        //FAIRE EN SORTE QUON EST PAS BESOIN DE RAFRAICHIR LA PAGE
-
         // on affiche le total et le nombre d'article
         let quantity = document.getElementById("totalQuantity");
         quantity.textContent = ` ${TotalQuantityPanier}`;
@@ -116,7 +112,7 @@ if (produitDuPanier === null) {
         }
       });
   }
-
+  // Lorsque tout les articles ont été supprimés du panier
   if (produitDuPanier.length === 0) {
     totalQuantity = document.getElementById("totalQuantity");
     totalQuantity.textContent = 0;
@@ -128,8 +124,10 @@ if (produitDuPanier === null) {
 
 // 3 --- Validation FORMULAIRE
 
-let validation = document.getElementById("order"); // on cible le btn de validation
-let champValid = false; // le champ est manquant oumauvais format
+// on cible le btn de validation
+let validation = document.getElementById("order");
+
+//Vérification de la valididté de chaque champ
 
 //pour valider le champ prénom
 let prenom = document.getElementById("firstName");
@@ -138,22 +136,25 @@ let prenomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïà
 validation.addEventListener("click", validatePrenom);
 
 function validatePrenom(e) {
+  e.preventDefault();
   if (prenom.validity.valueMissing) {
     //si le champ de donnée n'est pas renseigné
-
     prenomErreur.textContent = "Veuillez indiquer votre prénom";
     prenomErreur.style.color = "red";
-    champValid = false;
-  } else if (prenomRegexp.test(prenom.value) == false) {
-    // si le champs de donnée est incorrect
-
-    prenomErreur.textContent = "Le format est incorrect";
-    prenomErreur.style.color = "orange";
-    champValid = false;
-  } else {
-    champValid = true;
   }
 }
+prenom.onkeydown = function () {
+  if (prenomRegexp.test(prenom.value) == true) {
+    // si le champ est renseigné ET valide
+    prenomErreur.textContent = "Format valide";
+    prenomErreur.style.color = "lime";
+  } else {
+    // si le champs de donnée est incorrect
+    prenomErreur.textContent =
+      "Le format est incorrect (pas de chiffre ou caractères spéciaux)";
+    prenomErreur.style.color = "orange";
+  }
+};
 
 // pour valider le champ nom
 let nom = document.getElementById("lastName");
@@ -162,46 +163,62 @@ let nomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]
 validation.addEventListener("click", validateNom);
 
 function validateNom(e) {
+  e.preventDefault();
   if (nom.validity.valueMissing) {
     nomErreur.textContent = "Veuillez indiquer votre nom";
     nomErreur.style.color = "red";
-    champValid = false;
-  } else if (nomRegexp.test(nom.value) == false) {
-    nomErreur.textContent = "Le format est incorrect";
-    nomErreur.style.color = "orange";
-    champValid = false;
-  } else {
-    champValid = true;
   }
 }
+nom.onkeydown = function () {
+  if (nomRegexp.test(nom.value) == true) {
+    // si le champ est renseigné ET valide
+    nomErreur.textContent = "Format valide";
+    nomErreur.style.color = "lime";
+  } else {
+    // si le champs de donnée est incorrect
+    nomErreur.textContent =
+      "Le format est incorrect (pas de chiffre ou caractères spéciaux)";
+    nomErreur.style.color = "orange";
+  }
+};
 // pour valider le champ adresse
 let adresse = document.getElementById("address");
 let adresseErreur = document.getElementById("addressErrorMsg");
 validation.addEventListener("click", validateAdresse);
 
 function validateAdresse(e) {
+  e.preventDefault();
   if (adresse.validity.valueMissing) {
     adresseErreur.textContent = "Veuillez indiquer votre adresse";
     adresseErreur.style.color = "red";
-    champValid = false;
-  } else {
-    champValid = true;
   }
 }
+adresse.onkeydown = function () {
+  if (adresse.validity.valueMissing == false) {
+    // si le champ est renseigné ET valide
+    adresseErreur.textContent = "Format valide";
+    adresseErreur.style.color = "lime";
+  }
+};
 // pour valider le champ ville
 let ville = document.getElementById("city");
 let villeErreur = document.getElementById("cityErrorMsg");
 validation.addEventListener("click", validateVille);
 
 function validateVille(e) {
+  e.preventDefault();
   if (ville.validity.valueMissing) {
     villeErreur.textContent = "Veuillez indiquer votre ville";
     villeErreur.style.color = "red";
-    champValid = false;
-  } else {
-    champValid = true;
   }
 }
+ville.onkeydown = function () {
+  if (ville.validity.valueMissing == false) {
+    // si le champ est renseigné ET valide
+    villeErreur.textContent = "Format valide";
+    adresseErreur.style.color = "lime";
+  }
+};
 // pour valider le champ email
 let email = document.getElementById("email");
 let emailErreur = document.getElementById("emailErrorMsg");
@@ -209,28 +226,25 @@ let emailRegexp = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
 validation.addEventListener("click", validateEmail);
 
 function validateEmail(e) {
+  e.preventDefault();
   if (email.validity.valueMissing) {
     emailErreur.textContent = "Veuillez indiquer votre adresse email";
     emailErreur.style.color = "red";
-    champValid = false;
   }
 }
 email.onkeydown = function () {
   if (emailRegexp.test(email.value) == true) {
     emailErreur.textContent = "L'adresse email est valide";
     emailErreur.style.color = "lime";
-    champValid = true;
   } else {
     emailErreur.textContent = "L'adresse email n'est pas valide";
     emailErreur.style.color = "orange";
-    champValid = false;
   }
 };
 
-// création de l'objet contact et du tableau de produit
+// 4 ---- Création de l'objet contact et du tableau de produit + envoi à l'API
 
-// let formId = document.querySelector(".cart__order__form");
-// console.log(formId);
+//Envoie de la commande lorsque le formulaire est validé
 validation.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -242,21 +256,48 @@ validation.addEventListener("click", (e) => {
     ville: ville.value,
     email: email.value,
   };
-
-  //envoi des données dans le LS
-  if (champValid == true) {
-    console.log(champValid); //ERNVOI TRUE QD EMAIL EST INCORRECT A REVOIR
-    localStorage.setItem("contact", JSON.stringify(contact));
-  } else {
-    alert("Merci de vérifier l'exactitude des renseignements du formulaire");
+  console.log(contact);
+  // recupération d'un tableau des id produit du localstorage
+  let idArray = [];
+  for (let i = 0; i < produitDuPanier.length; i++) {
+    idArray.push(produitDuPanier[i].id);
   }
 
-  //objet contenant objet contact et panier à envoyer dans l'api
-  let aEnvoyer = {
-    // UTILISER FETCH POUR ENVOYER PRODUCT + FORMULAIRE A L API
-    produitDuPanier,
+  //Rassembler les données à envoyer à l'API
+  let commandeFinal = {
     contact,
+    idArray,
   };
-
-  console.log("a envoyer", aEnvoyer);
+  //SI, l'ensemble des champs du formulaire sont valides
+  if (
+    prenomRegexp.test(prenom.value) == true &&
+    nomRegexp.test(nom.value) == true &&
+    emailRegexp.test(email.value) == true &&
+    ville.validity.valueMissing == false &&
+    adresse.validity.valueMissing == false
+  ) {
+    //... optionelle, pour tout afficher dans l'api
+    localStorage.setItem("commandefinal", JSON.stringify(commandeFinal));
+    // on utilise post fetch pour envoyer le tableau d'id + les données du formulaire
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commandeFinal),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.orderId);
+        // localStorage.clear();
+        document.location.href = "confirmation.html?orderId=" + data.orderId;
+      })
+      .catch((err) => console.log(err.message));
+    alert("Commande validé avec succès");
+  } else {
+    //...SINON
+    return alert(
+      "Merci de vérifier l'exactitude des renseignements du formulaire"
+    );
+  }
 });
