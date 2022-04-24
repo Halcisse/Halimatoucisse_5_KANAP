@@ -248,15 +248,6 @@ email.onkeydown = function () {
 validation.addEventListener("click", (e) => {
   e.preventDefault();
 
-  // récupération des valeurs du formulaire dans l'objet contact
-  let contact = {
-    prenom: prenom.value,
-    nom: nom.value,
-    adresse: adresse.value,
-    ville: ville.value,
-    email: email.value,
-  };
-  console.log(contact);
   // recupération d'un tableau des id produit du localstorage
   let idArray = [];
   for (let i = 0; i < produitDuPanier.length; i++) {
@@ -265,10 +256,17 @@ validation.addEventListener("click", (e) => {
 
   //Rassembler les données à envoyer à l'API
   let commandeFinal = {
-    contact,
-    idArray,
+    // récupération des valeurs du formulaire dans l'objet contact
+    contact: {
+      prenom: prenom.value,
+      nom: nom.value,
+      adresse: adresse.value,
+      ville: ville.value,
+      email: email.value,
+    },
+    product: idArray,
   };
-  //SI, l'ensemble des champs du formulaire sont valides
+  //SI, l'ensemble des champs du formulaire est valide
   if (
     prenomRegexp.test(prenom.value) == true &&
     nomRegexp.test(nom.value) == true &&
@@ -283,12 +281,13 @@ validation.addEventListener("click", (e) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(commandeFinal),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.orderId);
+        console.log(data);
         // localStorage.clear();
         document.location.href = "confirmation.html?orderId=" + data.orderId;
       })
