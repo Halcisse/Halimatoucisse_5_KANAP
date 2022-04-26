@@ -1,6 +1,5 @@
 // 1 --- Depuis la page Panier, récupérer le panier et ses éléments via localStorage
 let produitDuPanier = JSON.parse(localStorage.getItem("panier"));
-console.log(produitDuPanier);
 
 // 2 --- On vérifie s'il y a des articles dans le panier, si oui, on les affiche
 
@@ -12,7 +11,7 @@ if (produitDuPanier === null) {
   alert("Votre panier est vide, veuillez séléctionner au moins un article");
 } else {
   //SINON
-  //on définis les variables nécessaire au calcul du total en dehors de la boucle
+  //on définis les variables nécessaire au calcul du total
   let totalPrice = [];
   let totalQuantity = [];
   //on crée la boucle permettant d'afficher les produits du panier
@@ -22,7 +21,7 @@ if (produitDuPanier === null) {
     let productColor = produitDuPanier[i].color;
     let productQuantity = produitDuPanier[i].quantity;
 
-    // utiliser fetch pour récupérer et afficher les infos complètes de chaque article
+    // On utilise fetch pour récupérer et afficher les infos complètes de chaque article
     fetch(`http://localhost:3000/api/products/${productId}`)
       .then((response) => response.json())
       .then((product) => {
@@ -75,7 +74,6 @@ if (produitDuPanier === null) {
 
         for (let i = 0; i < itemQuantity.length; i++) {
           itemQuantity[i].addEventListener("change", (e) => {
-            console.log(e.target);
             let newQuantity = e.target.value;
             let articleToChangeId = e.target.closest("article").dataset.id;
             let articleToChangeColor =
@@ -122,9 +120,9 @@ if (produitDuPanier === null) {
   }
 }
 
-// 3 --- Validation FORMULAIRE
+// 3 --- Validation du FORMULAIRE
 
-// on cible le btn de validation
+// On cible le btn de validation
 let validation = document.getElementById("order");
 
 //Vérification de la valididté de chaque champ
@@ -149,7 +147,7 @@ prenom.onkeydown = function () {
     prenomErreur.textContent = "Format valide";
     prenomErreur.style.color = "lime";
   } else {
-    // si le champs de donnée est incorrect
+    // si le champ de donnée est incorrect
     prenomErreur.textContent =
       "Le format est incorrect (pas de chiffre ou caractères spéciaux)";
     prenomErreur.style.color = "orange";
@@ -171,11 +169,9 @@ function validateNom(e) {
 }
 nom.onkeydown = function () {
   if (nomRegexp.test(nom.value) == true) {
-    // si le champ est renseigné ET valide
     nomErreur.textContent = "Format valide";
     nomErreur.style.color = "lime";
   } else {
-    // si le champs de donnée est incorrect
     nomErreur.textContent =
       "Le format est incorrect (pas de chiffre ou caractères spéciaux)";
     nomErreur.style.color = "orange";
@@ -248,9 +244,8 @@ email.onkeydown = function () {
   }
 };
 
-// 4 ---- Création de l'objet contact et du tableau de produit + envoi à l'API
+// 4 ---- Validation de la commade 
 
-//Envoie de la commande lorsque le formulaire est validé
 validation.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -270,9 +265,10 @@ validation.addEventListener("click", (e) => {
       city: ville.value,
       email: email.value,
     },
+    // et du tableau d'id
     products: idArray,
   };
-  console.log(commandeFinal);
+  
   //SI, l'ensemble des champs du formulaire est valide
   if (
     prenomRegexp.test(prenom.value) == true &&
@@ -281,9 +277,9 @@ validation.addEventListener("click", (e) => {
     ville.validity.valueMissing == false &&
     adresse.validity.valueMissing == false
   ) {
-    //... optionelle, pour tout afficher dans l'api
+    //On envoie la commande au LS
     localStorage.setItem("commandefinal", JSON.stringify(commandeFinal));
-    // on utilise post fetch pour envoyer le tableau d'id + les données du formulaire
+    // on utilise post fetch pour envoyer la commande au serveur (API)
     fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
@@ -294,7 +290,6 @@ validation.addEventListener("click", (e) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.orderId);
         localStorage.clear();
         document.location.href = "confirmation.html?orderId=" + data.orderId;
       })

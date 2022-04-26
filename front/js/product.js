@@ -1,15 +1,12 @@
 // 1 --- Affichage des éléments de la page produit
-//récupère l'id d'un produit avec searchparams
+//On récupère l'id d'un produit avec searchparams
 let params = new URL(document.location).searchParams;
-console.log(params);
 let productId = params.get("id");
-console.log(productId);
 
-//récupère chaque produit depuis l'api
+//On récupère chaque produit depuis l'api
 fetch(`http://localhost:3000/api/products/${productId}`)
   .then((response) => response.json())
   .then((product) => {
-    console.log(product);
     // on récupère les infos du produit
     document.getElementById("title").textContent = product.name;
     document.getElementById("price").textContent = product.price;
@@ -24,7 +21,6 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     // les couleurs
     // première ligne de selection
     let selectOption = document.querySelector("select");
-    console.log(selectOption);
     for (i = 0; i < product.colors.length; i++) {
       let option = document.createElement("option");
       option.setAttribute("value", product.colors[i]);
@@ -36,7 +32,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
 //2 --- Gestion du bouton panier
 let add = document.getElementById("addToCart");
 add.addEventListener("click", function () {
-  // verif qu'il y a une couleur et qté valable
+  // On vérifie qu'il y a une couleur et qté valable
   let colorValue = document.getElementById("colors").value;
   if (colorValue == "") {
     return alert("Veuillez choisir une couleur");
@@ -45,16 +41,17 @@ add.addEventListener("click", function () {
   if (quantityValue < 1 || quantityValue > 100) {
     return alert("Veuillez choisir une quantité entre 1 et 100");
   }
+
   let article = {
     id: productId,
     color: colorValue,
     quantity: quantityValue,
   };
-  //verif s'il y a un produit dans le panier, si non, on crée le tableau,
+  //On vérifie s'il y a un panier dans le LS
   let getPanier = localStorage.getItem("panier");
-  // si le panier n'a pas été crée
+  // si le LS ne renvoie rien
   if (getPanier == null) {
-    //on crée le tableau et on ajoute le premier produit
+    //on crée le tableau de produit et on ajoute le premier produit
     let panier = [];
     panier.push(article);
     localStorage.setItem("panier", JSON.stringify(panier));
