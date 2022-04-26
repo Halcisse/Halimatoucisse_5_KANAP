@@ -184,6 +184,7 @@ nom.onkeydown = function () {
 // pour valider le champ adresse
 let adresse = document.getElementById("address");
 let adresseErreur = document.getElementById("addressErrorMsg");
+let adresseRegexp = /([0-9]{0,5})([A-ZÀ-Ÿa-z-, ']{4,60})$/;
 validation.addEventListener("click", validateAdresse);
 
 function validateAdresse(e) {
@@ -194,15 +195,18 @@ function validateAdresse(e) {
   }
 }
 adresse.onkeydown = function () {
-  if (adresse.validity.valueMissing == false) {
-    // si le champ est renseigné ET valide
+  if (adresseRegexp.test(adresse.value) == true) {
     adresseErreur.textContent = "Format valide";
     adresseErreur.style.color = "lime";
+  } else {
+    adresseErreur.textContent = "Veuillez vérifier le format de l'adresse";
+    adresseErreur.style.color = "orange";
   }
 };
 // pour valider le champ ville
 let ville = document.getElementById("city");
 let villeErreur = document.getElementById("cityErrorMsg");
+let villeRegexp = /([0-9]{0,5})([A-ZÀ-Ÿa-z-, ']{4,60})$/;
 validation.addEventListener("click", validateVille);
 
 function validateVille(e) {
@@ -213,10 +217,12 @@ function validateVille(e) {
   }
 }
 ville.onkeydown = function () {
-  if (ville.validity.valueMissing == false) {
-    // si le champ est renseigné ET valide
+  if (villeRegexp.test(ville.value) == true) {
     villeErreur.textContent = "Format valide";
-    adresseErreur.style.color = "lime";
+    villeErreur.style.color = "lime";
+  } else {
+    villeErreur.textContent = "Veuillez vérifier le format de la ville";
+    villeErreur.style.color = "orange";
   }
 };
 // pour valider le champ email
@@ -258,14 +264,15 @@ validation.addEventListener("click", (e) => {
   let commandeFinal = {
     // récupération des valeurs du formulaire dans l'objet contact
     contact: {
-      prenom: prenom.value,
-      nom: nom.value,
-      adresse: adresse.value,
-      ville: ville.value,
+      firstName: prenom.value,
+      lastName: nom.value,
+      address: adresse.value,
+      city: ville.value,
       email: email.value,
     },
-    product: idArray,
+    products: idArray,
   };
+  console.log(commandeFinal);
   //SI, l'ensemble des champs du formulaire est valide
   if (
     prenomRegexp.test(prenom.value) == true &&
@@ -287,8 +294,8 @@ validation.addEventListener("click", (e) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        // localStorage.clear();
+        console.log(data.orderId);
+        localStorage.clear();
         document.location.href = "confirmation.html?orderId=" + data.orderId;
       })
       .catch((err) => console.log(err.message));

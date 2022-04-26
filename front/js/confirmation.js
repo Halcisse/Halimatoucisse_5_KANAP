@@ -1,2 +1,5 @@
-//Envoyer le panier et le formulaire à l'API
-//générer le numéro orderId
+// récupérer orderId et l'afficher
+
+let orderId = new URLSearchParams(document.location.search).get("orderId");
+
+document.getElementById("orderId").textContent = orderId;
