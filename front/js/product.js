@@ -17,7 +17,6 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     image.src = product.imageUrl;
     image.alt = product.altTxt;
     itemImg.append(image);
-    console.log(product);
     // les couleurs
     // première ligne de selection
     let selectOption = document.querySelector("select");

@@ -25,7 +25,6 @@ if (produitDuPanier === null) {
     fetch(`http://localhost:3000/api/products/${productId}`)
       .then((response) => response.json())
       .then((product) => {
-        // console.log(product, produitDuPanier[i]);
         cartItem.innerHTML += `               <article class="cart__item" data-id="${productId}" data-color="${productColor}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -244,7 +243,7 @@ email.onkeydown = function () {
   }
 };
 
-// 4 ---- Validation de la commade 
+// 4 ---- Validation de la commade
 
 validation.addEventListener("click", (e) => {
   e.preventDefault();
@@ -268,14 +267,14 @@ validation.addEventListener("click", (e) => {
     // et du tableau d'id
     products: idArray,
   };
-  
+
   //SI, l'ensemble des champs du formulaire est valide
   if (
     prenomRegexp.test(prenom.value) == true &&
     nomRegexp.test(nom.value) == true &&
     emailRegexp.test(email.value) == true &&
-    ville.validity.valueMissing == false &&
-    adresse.validity.valueMissing == false
+    villeRegexp.test(ville.value) == true &&
+    adresseRegexp.test(adresse.value) == true
   ) {
     //On envoie la commande au LS
     localStorage.setItem("commandefinal", JSON.stringify(commandeFinal));
@@ -294,7 +293,6 @@ validation.addEventListener("click", (e) => {
         document.location.href = "confirmation.html?orderId=" + data.orderId;
       })
       .catch((err) => console.log(err.message));
-    alert("Commande validé avec succès");
   } else {
     //...SINON
     return alert(
