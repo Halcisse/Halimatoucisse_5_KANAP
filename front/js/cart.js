@@ -156,7 +156,7 @@ prenom.onkeydown = function () {
 // pour valider le champ nom
 let nom = document.getElementById("lastName");
 let nomErreur = document.getElementById("lastNameErrorMsg");
-let nomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?){3,50}+)$/;
+let nomRegexp = /^(([A-Za-zÉÈÎÏéèêîïàç]+['.]?[ ]?|[a-zéèêîïàç]+['-]?)+)$/;
 validation.addEventListener("click", validateNom);
 
 function validateNom(e) {
